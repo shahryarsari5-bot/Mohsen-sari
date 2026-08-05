@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>سامانه آموزشی | صفحه اصلی</title>
+  
+  <!-- فونت وزیرمتن -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css">
+  
+  <!-- فایل استایل اصلی -->
+  <link rel="stylesheet" href="style.css">
+
+  <!-- استایل‌های اختصاصی اسلایدر اخبار و معرفی -->
+  <style>
+    /* --- اسلایدر آخرین اخبار --- */
+    .news-slider-wrapper {
+      position: relative;
+      width: 100%;
+      height: 380px;
+      border-radius: 28px;
+      overflow: hidden;
+      margin-bottom: 35px;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
+      background: #0f172a;
+    }
+
+    .slider-track {
+      display: flex;
+      width: 100%;
+      height: 100%;
+      transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+    }
+
+    .slide-item {
+      min-width: 100%;
+      height: 100%;
+      position: relative;
+    }
+
+    .slide-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0.85;
+    }
+
+    .slide-caption {
+      position: absolute;
+      bottom: 0;
+      inset-x: 0;
+      padding: 30px 40px;
+      background: linear-gradient(180deg, transparent 0%, rgba(15, 23, 42, 0.9) 100%);
+      color: #ffffff;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .slide-tag {
+      display: inline-block;
+      align-self: flex-start;
+      background: #0284c7;
+      color: #fff;
+      font-size: 0.8rem;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-weight: bold;
+    }
+
+    .slide-caption h3 {
+      font-size: 1.4rem;
+      font-weight: 800;
+      margin: 0;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.4);
+    }
+
+    /* دکمه‌های چپ و راست اسلایدر */
+    .slider-btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 46px;
+      height: 46px;
+      background: rgba(255, 255, 255, 0.25);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      color: #ffffff;
+      border-radius: 50%;
+      font-size: 1.2rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+      z-index: 10;
+    }
+
+    .slider-btn:hover {
+      background: rgba(255, 255, 255, 0.8);
+      color: #0f172a;
+    }
+
+    .slider-btn.prev { right: 15px; }
+    .slider-btn.next { left: 15px; }
+
+    /* نقطه‌های پایین اسلایدر */
+    .slider-dots {
+      position: absolute;
+      bottom: 15px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 8px;
+      z-index: 10;
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.4);
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .dot.active {
+      width: 28px;
+      border-radius: 12px;
+      background: #0284c7;
+    }
+
+    /* --- کارت معرفی --- */
+    .intro-card {
+      background: rgba(255, 255, 255, 0.75);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.6);
+      border-radius: 28px;
+      padding: 35px;
+      margin-bottom: 40px;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.04);
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 35px;
+      align-items: center;
+    }
+
+    @media (max-width: 868px) {
+      .intro-card {
+        grid-template-columns: 1fr;
+        text-align: center;
+      }
+      .news-slider-wrapper { height: 280px; }
+      .slide-caption h3 { font-size: 1.1rem; }
+    }
+
+    .photo-placeholder {
+      width: 100%;
+      height: 320px;
+      border-radius: 20px;
+      border: 2px dashed #0284c7;
+      background: rgba(240, 249, 255, 0.6);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: #0284c7;
+      font-size: 0.95rem;
+      font-weight: bold;
+    }
+
+    .intro-content {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .doctor-badge {
+      display: inline-block;
+      align-self: flex-start;
+      background: linear-gradient(135deg, #0284c7, #2563eb);
+      color: #ffffff;
+      padding: 6px 16px;
+      border-radius: 12px;
+      font-size: 0.9rem;
+      font-weight: 700;
+    }
+
+    @media (max-width: 868px) {
+      .doctor-badge { align-self: center; }
+    }
+
+    .intro-text {
+      color: #334155;
+      font-size: 0.98rem;
+      line-height: 1.85;
+      text-align: justify;
+      margin: 10px 0;
+    }
+
+    .social-links {
+      display: flex;
+      gap: 12px;
+      margin-top: 10px;
+    }
+
+    @media (max-width: 868px) {
+      .social-links { justify-content: center; }
+    }
+
+    .social-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px 20px;
+      border-radius: 14px;
+      font-size: 0.88rem;
+      font-weight: bold;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      color: #ffffff;
+    }
+
+    .social-btn:hover { transform: translateY(-3px); }
+    .btn-instagram { background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); }
+    .btn-telegram { background: #29a9ea; }
+    .btn-whatsapp { background: #25d366; }
+  </style>
+</head>
+<body>
+
+  <!-- ================= هدر شیشه‌ای ================= -->
+  <div class="header-wrapper">
+    <header class="glass-header" id="mainHeader">
+      <nav class="header-nav">
+        <a href="index.html" class="active">خانه</a>
+        <a href="messages.html">پیام‌ها</a>
+        <a href="contact.html">ارتباط با ما</a>
+        
+        <div class="dropdown">
+          <a href="#">گاوهای شیری ▾</a>
+          <div class="dropdown-menu">
+            <a href="calf-rearing.html">پرورش گوساله</a>
+          </div>
+        </div>
+
+        <a href="courses.html">دوره‌ها / پروژه</a>
+        <a href="about.html">درباره من</a>
+        <a href="files.html">فایل‌های من</a>
+        <a href="#" id="adminNavBtn" onclick="openLoginModal()" style="color: #4f46e5; border: 1px dashed #4f46e5;">ورود مدیر</a>
+      </nav>
+      <div class="header-logo">
+        <a href="index.html"><img src="logo.png" alt="لوگو"></a>
+      </div>
+    </header>
+  </div>
+
+  <!-- ================= محتوای اصلی ================= -->
+  <main class="container">
+
+    <!-- بخش اسلایدر آخرین اخبار و اطلاعات -->
+    <section class="news-slider-wrapper">
+      <button class="slider-btn prev" onclick="moveSlide(1)">❯</button>
+      <button class="slider-btn next" onclick="moveSlide(-1)">❮</button>
+
+      <div class="slider-track" id="sliderTrack">
+        
+        <div class="slide-item">
+          <img src="https://images.pexels.com/photos/422218/pexels-photo-422218.jpeg?auto=compress&cs=tinysrgb&w=1200" alt="خبر ۱">
+          <div class="slide-caption">
+            <span class="slide-tag">خوش آمدید</span>
+            <h3>به وبسایت تخصصی مدیریت و تغذیه گله‌های گاو شیری خوش آمدید</h3>
+          </div>
+        </div>
+
+        <div class="slide-item">
+          <img src="https://images.pexels.com/photos/1112080/pexels-photo-1112080.jpeg?auto=compress&cs=tinysrgb&w=1200" alt="خبر ۲">
+          <div class="slide-caption">
+            <span class="slide-tag">اطلاعیه مهم</span>
+            <h3>راهکارهای مدرن کاهش استرس گرمایی در مزارع پرورش صنعتی</h3>
+          </div>
+        </div>
+
+        <div class="slide-item">
+          <img src="https://images.pexels.com/photos/735968/pexels-photo-735968.jpeg?auto=compress&cs=tinysrgb&w=1200" alt="خبر ۳">
+          <div class="slide-caption">
+            <span class="slide-tag">مقالات جدید</span>
+            <h3>تازه‌ترین یافته‌ها درباره مدیریت بهداشت و پرورش گوساله تازه متولد شده</h3>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="slider-dots" id="sliderDots">
+        <span class="dot active" onclick="currentSlide(0)"></span>
+        <span class="dot" onclick="currentSlide(1)"></span>
+        <span class="dot" onclick="currentSlide(2)"></span>
+      </div>
+    </section>
+
+    <!-- کارت معرفی و هیرو شیشه‌ای -->
+    <section class="intro-card">
+      <div class="photo-placeholder">
+        <span style="font-size: 2rem; margin-bottom: 8px;">📷</span>
+        <span>محل قرارگیری تصویر</span>
+      </div>
+
+      <div class="intro-content">
+        <span class="doctor-badge">متخصص تغذیه و مدیریت گله‌های گاو شیری</span>
+
+        <p class="intro-text">
+          به جمع ما بپیوندید تا گامی نو در مسیر ارتقای دانش مدیریت گله‌های شیری برداریم. اینجا فرصتی است برای مرور تازه‌ترین یافته‌ها، هم‌اندیشی با کارشناسان برجسته، و به‌روزرسانی روش‌های عملیاتی بر اساس آخرین استانداردهای روز. در این پایگاه، مجموعه‌ای از گفت‌وگوهای تصویری با صاحب‌نظران مطرح صنعت، به همراه گنجینه‌ای از مقالات تخصصی و به‌روز، در دسترس شما قرار گرفته است. افزون بر این، امکان ارتباط مستقیم با متخصصین باتجربه در حوزه‌های گوناگون پرورش گاو شیری نیز فراهم شده تا بتوانید راهکارهای اختصاصی برای چالش‌های خود دریافت کنید.
+        </p>
+
+        <div class="social-links">
+          <a href="#" class="social-btn btn-instagram" title="اینستاگرام">اینستاگرام</a>
+          <a href="#" class="social-btn btn-telegram" title="تلگرام">تلگرام</a>
+          <a href="#" class="social-btn btn-whatsapp" title="واتساپ">واتساپ</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- بخش اهداف ما (شیشه‌ای و اختصاصی) -->
+    <section class="goals-card" style="
+      background: rgba(255, 255, 255, 0.75);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.6);
+      border-radius: 28px;
+      padding: 35px;
+      margin-top: 35px;
+      margin-bottom: 40px;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.04);
+    ">
+      <h2 style="
+        font-size: 1.4rem;
+        font-weight: 800;
+        color: #0f172a;
+        margin-top: 0;
+        margin-bottom: 15px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      ">
+        <span style="color: #0284c7;">🎯</span> ما در این مجموعه چه اهدافی را دنبال می‌کنیم؟
+      </h2>
+      
+      <p style="
+        color: #334155;
+        font-size: 0.98rem;
+        line-height: 1.9;
+        text-align: justify;
+        margin: 0;
+      ">
+        مهم‌ترین رسالت ما، ارتقای سطح دانش تخصصی بهره‌برداران و فعالان حوزه پرورش گاو شیری در زمینه‌های مدیریت علمی و تغذیه اصولی گله است. تلاش می‌کنیم با ارائه راهکارهای نوین، کاربردی و منطبق بر تازه‌ترین یافته‌های علمی، بستری فراهم سازیم که ضمن کاهش اتلاف منابع و کنترل هزینه‌های جاری، مسیر افزایش میزان و کیفیت تولید شیر هموار شود. هدف نهایی این پایگاه، بهبود سلامت و رفاه همه‌جانبه دام، افزایش بهره‌وری و در نهایت دستیابی به حداکثر سودآوری و پایدارسازی دامداری‌های کشور است.
+      </p>
+    </section>
+  </main>
+
+  <!-- دکمه شناور برگشت به بالا -->
+  <a href="#" id="scrollTopBtn" class="scroll-to-top" title="برگشت به بالا">
+    <span>برگشت به بالا</span>
+  </a>
+
+  <!-- ================= مودال ورود مدیریت ================= -->
+  <div id="loginModal" class="modal-overlay">
+    <div class="modal-card">
+      <h3>ورود به پنل مدیریت</h3>
+      <form id="loginForm" onsubmit="handleLogin(event)">
+        <input type="text" id="username" placeholder="نام کاربری" required autocomplete="off">
+        <input type="password" id="password" placeholder="کلمه عبور" required>
+        <div class="modal-btn-group">
+          <button type="submit" class="btn-login">ورود</button>
+          <button type="button" class="btn-cancel" onclick="closeLoginModal()">انصراف</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- اسکریپت کنترل اسلایدر (باگ اصلاح‌شده RTL) -->
+  <script>
+    let slideIndex = 0;
+
+    function updateSlider() {
+      const track = document.getElementById('sliderTrack');
+      const dots = document.querySelectorAll('#sliderDots .dot');
+      const slides = document.querySelectorAll('.slide-item');
+      
+      if (!track || slides.length === 0) return;
+
+      // اصلاح انیمیشن برای سایت‌های RTL (برعکس شدن جهت)
+      track.style.transform = `translateX(${slideIndex * 100}%)`;
+
+      dots.forEach((dot, index) => {
+        if (index === slideIndex) {
+          dot.classList.add('active');
+        } else {
+          dot.classList.remove('active');
+        }
+      });
+    }
+
+    function moveSlide(direction) {
+      const slides = document.querySelectorAll('.slide-item');
+      if (slides.length === 0) return;
+
+      slideIndex += direction;
+      if (slideIndex >= slides.length) slideIndex = 0;
+      if (slideIndex < 0) slideIndex = slides.length - 1;
+
+      updateSlider();
+    }
+
+    function currentSlide(index) {
+      slideIndex = index;
+      updateSlider();
+    }
+
+    // تغییر خودکار هر ۵ ثانیه
+    let autoSlideInterval = setInterval(() => {
+      moveSlide(1);
+    }, 5000);
+  </script>
+
+  <script src="main.js"></script>
+</body>
+</html>

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>درباره من</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+ <!-- هدر شیشه‌ای کامل و هماهنگ -->
+<div class="header-wrapper" id="headerWrapper">
+  <header class="glass-header" id="mainHeader">
+    <nav class="header-nav">
+      <a href="index.html">خانه</a>
+      <a href="messages.html">پیام‌ها</a>
+      <a href="contact.html">ارتباط با ما</a>
+      
+      <div class="dropdown">
+        <a href="#">گاوهای شیری ▾</a>
+        <div class="dropdown-menu">
+          <a href="calf-rearing.html">پرورش گوساله</a>
+        </div>
+      </div>
+
+      <a href="courses.html">دوره‌ها / پروژه</a>
+      <a href="about.html" class="active">درباره من</a>
+      <a href="files.html">فایل‌های من</a>
+      <a href="#" id="adminNavBtn" onclick="openLoginModal()" style="color: #4f46e5; border: 1px dashed #4f46e5;">ورود مدیر</a>
+    </nav>
+    <div class="header-logo">
+      <img src="logo.png" alt="لوگو">
+    </div>
+  </header>
+</div>
+
+  <main class="container">
+    <div id="notifBannerArea"></div>
+
+    <div class="video-card" style="padding: 30px; line-height: 1.8;">
+      <h2 class="section-title" style="text-align: right; margin-bottom: 15px;">درباره فعالیت‌های ما</h2>
+      <p style="color: #475569; font-size: 1rem;">
+        این وب‌سایت مرجع تخصصی ارائه آموزش‌ها، ویدیوها و فایل‌های کاربردی در زمینه صنعت دامپروری و پرورش گاوهای شیری است. هدف ما ارتقای دانش فنی، بهبود مدیریت فارم‌ها و اشتراک‌گذاری تازه‌ترین یافته‌های علمی با فعالان این بخش است.
+      </p>
+    </div>
+  </main>
+
+  <!-- پنجره لاگین مدیر -->
+  <div id="loginModal" class="modal-overlay">
+    <div class="modal-card">
+      <h3 style="margin-bottom: 15px; color: #0f172a;">ورود به پنل مدیریت</h3>
+      <input type="text" id="adminUser" class="form-input" placeholder="نام کاربری (admin)">
+      <input type="password" id="adminPass" class="form-input" placeholder="رمز عبور (admin123)">
+      <button onclick="checkLogin()" class="btn-primary">ورود</button>
+      <button onclick="closeLoginModal()" style="background: none; border: none; width: 100%; margin-top: 10px; color: #64748b; cursor: pointer;">انصراف</button>
+    </div>
+  </div>
+<a href="#" class="scroll-to-top" id="scrollTopBtn">
+  <span>برگشت به بالا</span>
+</a>
+  <script src="script.js"></script>
+</body>
+</html>

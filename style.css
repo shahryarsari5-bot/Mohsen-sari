@@ -1,0 +1,658 @@
+/* ==========================================
+   ۱. تنظیمات پایه و متغیرهای جدید (تم سفید-مشکی شیشه‌ای)
+   ========================================== */
+@import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;600;700;800;900&display=swap');
+
+:root {
+  --bg-dark: #ffffff;
+  --bg-card: rgba(255, 255, 255, 0.85);
+  --glass-border: rgba(0, 0, 0, 0.1);
+  --glass-highlight: rgba(255, 255, 255, 0.4);
+  --glass-glow: rgba(0, 0, 0, 0.08);
+  --primary-accent: #000000;
+  --text-main: #0f172a;
+  --text-sub: #475569;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'Vazirmatn', system-ui, -apple-system, sans-serif;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+html {
+  scroll-behavior: smooth;
+  background-color: #ffffff;
+}
+
+body {
+  background: #ffffff;
+  color: var(--text-main);
+  direction: rtl;
+  padding-top: 130px;
+  min-height: 100vh;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* ==========================================
+   ۲. هدر شیشه‌ای کپسولی (مشکی شیشه‌ای)
+   ========================================== */
+header, .header-wrapper {
+  position: fixed;
+  top: 20px;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center;
+  padding: 0 20px;
+  width: 100%;
+}
+
+header.scrolled, .header-wrapper.scrolled {
+  top: 10px;
+}
+
+header.scrolled .glass-header, .header-wrapper.scrolled .glass-header {
+  padding: 8px 24px;
+  background: rgba(15, 17, 23, 0.85);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.glass-header, .header-container {
+  width: 100%;
+  max-width: 1250px;
+  margin: 0 auto !important;
+  background: rgba(18, 20, 28, 0.85);
+  backdrop-filter: blur(30px) saturate(200%);
+  -webkit-backdrop-filter: blur(30px) saturate(200%);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-top: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50px;
+  padding: 14px 30px;
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center;
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.header-nav {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.header-nav a, .nav-link {
+  text-decoration: none;
+  color: #cbd5e1;
+  font-size: 0.95rem;
+  font-weight: 600;
+  padding: 9px 18px;
+  border-radius: 30px;
+  white-space: nowrap;
+}
+
+.header-nav a:hover, .header-nav a.active {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.15);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.admin-nav-link {
+  color: #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.4) !important;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.admin-nav-link:hover {
+  background: #ffffff !important;
+  color: #000000 !important;
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+}
+
+.header-logo {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  min-width: 50px;
+}
+
+.header-logo img {
+  height: 40px;
+  width: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 8px rgba(0,0,0,0.5));
+}
+
+/* منوی کشویی */
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background: rgba(18, 20, 28, 0.92);
+  backdrop-filter: blur(25px);
+  -webkit-backdrop-filter: blur(25px);
+  min-width: 190px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  border-radius: 20px;
+  padding: 8px;
+  z-index: 1000;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-top: 1px solid rgba(255, 255, 255, 0.3);
+  margin-top: 10px;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(10px);
+}
+
+.dropdown:hover .dropdown-menu {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.dropdown-menu a {
+  display: block;
+  padding: 10px 16px;
+  color: #cbd5e1;
+  font-size: 0.9rem;
+  font-weight: 600;
+  border-radius: 12px;
+  text-decoration: none;
+}
+
+.dropdown-menu a:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.12);
+}
+
+/* ==========================================
+   ۳. اسلایدر و جهت فلش‌ها (RTL)
+   ========================================== */
+.slider-container {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  border-radius: 28px;
+  border: 1px solid var(--glass-border);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+  margin-bottom: 40px;
+  background: #ffffff;
+}
+
+.slider-track {
+  display: flex;
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.slide-item {
+  min-width: 100%;
+  position: relative;
+}
+
+.slide-item img {
+  width: 100%;
+  height: 420px;
+  object-fit: cover;
+  display: block;
+}
+
+.slide-caption {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  padding: 40px 25px 25px;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.85), transparent);
+  color: #fff;
+}
+
+/* دکمه‌های اسلایدر (مشکی با متن/آیکون سفید) */
+.slider-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: #000000 !important;
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #ffffff !important;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  z-index: 10;
+}
+
+.slider-btn:hover {
+  background: #222222 !important;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.slider-btn.prev { right: 20px; }
+.slider-btn.next { left: 20px; }
+
+/* ==========================================
+   ۴. هیرو و شبکه ویدیوها و کارت‌های شیشه‌ای
+   ========================================== */
+.hero-section {
+  text-align: center;
+  margin-bottom: 45px;
+}
+
+.hero-section h1 {
+  font-size: 2.2rem;
+  font-weight: 900;
+  margin-bottom: 12px;
+  color: #0f172a;
+  letter-spacing: -0.5px;
+}
+
+.hero-section p {
+  color: var(--text-sub);
+  font-size: 1.05rem;
+}
+
+.video-grid, .files-grid, .videos-grid, .course-grid, .grid-container {
+  display: grid !important;
+  grid-template-columns: repeat(2, 1fr) !important;
+  gap: 28px !important;
+  margin-top: 30px;
+  margin-bottom: 50px;
+}
+
+@media (max-width: 768px) {
+  .video-grid, .files-grid, .videos-grid, .course-grid, .grid-container {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* کارت‌های Liquid Glass روی پس‌زمینه سفید */
+.video-card, .file-card {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(25px);
+  -webkit-backdrop-filter: blur(25px);
+  border-radius: 28px;
+  padding: 24px;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+}
+
+.video-card:hover, .file-card:hover {
+  transform: translateY(-5px);
+  border-color: rgba(0, 0, 0, 0.2);
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.1);
+}
+
+.video-card h3, .file-card h3 {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin-bottom: 16px;
+}
+
+.video-preview {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: 18px;
+  background: #000;
+  overflow: hidden;
+  margin-bottom: 18px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.video-badge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: #000000;
+  color: #ffffff;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 5px 12px;
+  border-radius: 12px;
+}
+
+.video-content p, .file-card p {
+  font-size: 0.95rem;
+  color: var(--text-sub);
+  line-height: 1.7;
+  margin-bottom: 20px;
+}
+
+/* ==========================================
+   ۵. دکمه شناور برگشت به بالا (مشکی با متن سفید)
+   ========================================== */
+.scroll-to-top {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  width: 52px;
+  height: 52px;
+  background: #000000 !important;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  color: #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  z-index: 9999;
+  overflow: hidden;
+  white-space: nowrap;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(15px);
+}
+
+.scroll-to-top.show {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.scroll-to-top::before {
+  content: "↑";
+  font-size: 1.3rem;
+  font-weight: bold;
+  color: #ffffff;
+}
+
+.scroll-to-top span {
+  max-width: 0;
+  opacity: 0;
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.scroll-to-top:hover {
+  width: 140px;
+  border-radius: 25px;
+  background: #222222 !important;
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+}
+
+.scroll-to-top:hover::before { margin-left: 6px; }
+.scroll-to-top:hover span { max-width: 100px; opacity: 1; }
+
+/* ==========================================
+   ۶. مودال ورود مدیریت
+   ========================================== */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 99999;
+}
+
+.modal-card {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(30px);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 32px;
+  padding: 35px 30px;
+  width: 100%;
+  max-width: 380px;
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+  text-align: center;
+}
+
+.modal-card h3 {
+  color: #0f172a;
+  margin-bottom: 20px;
+}
+
+.modal-card input {
+  width: 100%;
+  padding: 14px 18px;
+  margin-bottom: 14px;
+  background: rgba(0, 0, 0, 0.03);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 16px;
+  color: #0f172a;
+  outline: none;
+}
+
+.modal-card input:focus {
+  border-color: #000000;
+}
+
+.modal-btn-group {
+  display: flex;
+  gap: 12px;
+  margin-top: 15px;
+}
+
+/* دکمه‌های مودال (تماماً مشکی با متن سفید) */
+.btn-login {
+  flex: 1;
+  padding: 12px;
+  background: #000000 !important;
+  color: #ffffff !important;
+  border: none;
+  border-radius: 14px;
+  cursor: pointer;
+  font-weight: 800;
+}
+
+.btn-login:hover {
+  background: #222222 !important;
+}
+
+.btn-cancel {
+  flex: 1;
+  padding: 12px;
+  background: #333333 !important;
+  color: #ffffff !important;
+  border: none;
+  border-radius: 14px;
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.btn-cancel:hover {
+  background: #555555 !important;
+}
+
+/* ==========================================
+   ۷. استایل بخش پیام‌ها
+   ========================================== */
+.messages-form-card, .messages-list-section {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(25px);
+  border-radius: 28px;
+  padding: 32px;
+  margin-bottom: 35px;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.messages-form-card h2, .messages-list-section h2 {
+  font-size: 1.35rem;
+  font-weight: 800;
+  margin-bottom: 22px;
+  color: #0f172a;
+}
+
+#messageForm input, #messageForm textarea {
+  width: 100%;
+  padding: 14px 18px;
+  margin-bottom: 16px;
+  background: rgba(0, 0, 0, 0.03);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 16px;
+  color: #0f172a;
+  font-size: 0.95rem;
+  outline: none;
+}
+
+#messageForm input:focus, #messageForm textarea:focus {
+  border-color: #000000;
+  background: rgba(0, 0, 0, 0.05);
+}
+
+/* دکمه ارسال پیام (مشکی با متن سفید) */
+.btn-send-message {
+  padding: 14px 32px;
+  background: #000000 !important;
+  color: #ffffff !important;
+  border: none;
+  border-radius: 16px;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+}
+
+.btn-send-message:hover {
+  background: #222222 !important;
+}
+
+.messages-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.message-card {
+  background: rgba(0, 0, 0, 0.02);
+  border-radius: 20px;
+  padding: 20px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.message-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  color: #000000;
+  font-weight: 700;
+}
+
+.message-date {
+  font-size: 0.85rem;
+  color: var(--text-sub);
+}
+
+.message-body {
+  font-size: 0.95rem;
+  color: #334155;
+  line-height: 1.6;
+  margin-bottom: 12px;
+}
+
+.btn-delete-msg {
+  background: #000000 !important;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  color: #ffffff !important;
+  padding: 6px 14px;
+  border-radius: 10px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.btn-delete-msg:hover {
+  background: #cc0000 !important;
+}
+
+.no-messages {
+  color: var(--text-sub);
+  font-size: 0.95rem;
+  text-align: center;
+}
+
+/* ==========================================
+   ۸. تمام دکمه‌های سایت و دکمه دانلود (مشکی با متن سفید)
+   ========================================== */
+button, 
+.btn-download, 
+button[type="button"], 
+button[type="submit"], 
+.file-card a, 
+.social-btn {
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px 22px;
+  background: #000000 !important;
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  color: #ffffff !important;
+  font-size: 0.95rem;
+  font-weight: 800;
+  text-decoration: none !important;
+  border: 1px solid rgba(0, 0, 0, 0.8) !important;
+  border-radius: 18px;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+button:hover, 
+.btn-download:hover, 
+.file-card a:hover, 
+.social-btn:hover {
+  background: #222222 !important;
+  color: #ffffff !important;
+  border-color: #000000 !important;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+}
+/* ==========================================
+   تغییر استایل دکمه‌های شبکه‌های اجتماعی (طرح گاوی)
+   ========================================== */
+.social-btn {
+  background-image: url('cow-pattern.png') !important;
+  background-size: cover !important;
+  background-position: center !important;
+  color: #000000 !important;
+  font-weight: 900 !important;
+  border: 2px solid #000000 !important;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15) !important;
+  text-shadow: 0 0 4px rgba(255, 255, 255, 0.9); /* خوانا شدن متن روی طرح گاوی */
+}
+
+/* حالت هوور (وقتی موس می‌ره روی دکمه) */
+.social-btn:hover {
+  background-image: none !important;
+  background-color: #000000 !important;
+  color: #ffffff !important;
+  text-shadow: none !important;
+  border-color: #000000 !important;
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3) !important;
+}

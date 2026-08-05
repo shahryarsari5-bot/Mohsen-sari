@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>پرورش گوساله - گاوهای شیری</title>
+  
+  <!-- فونت وزیرمتن -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css">
+  
+  <!-- فایل استایل اصلی -->
+  <link rel="stylesheet" href="style.css">
+
+  <!-- استایل‌های اختصاصی بنر و پلیر ویدیوها -->
+  <style>
+    /* تنظیمات بنر بالایی (هیرو) */
+    .hero-banner {
+      position: relative;
+      width: 100%;
+      height: 260px;
+      border-radius: 24px;
+      overflow: hidden;
+      margin-bottom: 30px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+      background: #0f172a;
+    }
+
+    .hero-banner img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0.55; /* ایجاد تضاد برای خوانی بهتر متن */
+    }
+
+    .banner-overlay {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      text-align: center;
+      background: linear-gradient(180deg, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.6) 100%);
+    }
+
+    .banner-title {
+      color: #ffffff;
+      font-size: 1.6rem;
+      font-weight: 800;
+      line-height: 1.6;
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+      margin: 0;
+    }
+
+    /* تنظیم کارت‌ها و عریض/بزرگ‌شدن ویدیوها */
+    .video-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+      gap: 25px;
+    }
+
+    .video-card {
+      background: #ffffff;
+      border-radius: 20px;
+      padding: 20px;
+      border: 1px solid #e2e8f0;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.03);
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .video-card h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      color: #0f172a;
+      line-height: 1.5;
+      margin: 0;
+    }
+
+    .aparat-wrapper {
+      position: relative;
+      width: 100%;
+      padding-top: 56.25%; /* نسبت ۱۶:۹ واقعی */
+      border-radius: 14px;
+      overflow: hidden;
+      background: #000;
+    }
+
+    .aparat-wrapper iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100% !important;
+      height: 100% !important;
+      border: 0;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ================= هدر شیشه‌ای ================= -->
+<div class="header-wrapper" id="headerWrapper">
+  <header class="glass-header" id="mainHeader">
+    <nav class="header-nav">
+      <a href="index.html">خانه</a>
+      <a href="messages.html">پیام‌ها</a>
+      <a href="contact.html">ارتباط با ما</a>
+      
+      <div class="dropdown">
+        <a href="#" class="active">گاوهای شیری ▾</a>
+        <div class="dropdown-menu">
+          <a href="calf-rearing.html" class="active">پرورش گوساله</a>
+        </div>
+      </div>
+
+      <a href="courses.html">دوره‌ها / پروژه</a>
+      <a href="about.html">درباره من</a>
+      <a href="files.html">فایل‌های من</a>
+      <a href="#" id="adminNavBtn" onclick="openLoginModal()" style="color: #4f46e5; border: 1px dashed #4f46e5;">ورود مدیر</a>
+    </nav>
+    <div class="header-logo">
+      <img src="logo.png" alt="لوگو">
+    </div>
+  </header>
+</div>
+
+  <!-- ================= محتوای اصلی ================= -->
+  <main class="container">
+    <div id="notifBannerArea"></div>
+
+    <!-- بنر بالایی صفحه -->
+    <div class="hero-banner">
+      <img src="https://images.unsplash.com/photo-1546445317-29f4545f9d52?q=80&w=1000&auto=format&fit=crop" alt="پرورش گوساله">
+      <div class="banner-overlay">
+        <h1 class="banner-title">گوساله‌های خود را برای یک زندگی موفق و سودآور آماده کنید</h1>
+      </div>
+    </div>
+
+    <!-- عنوان بخش -->
+    <h2 class="section-title" style="margin-bottom: 30px; margin-top: 25px;">ویدیوهای آموزشی پرورش گوساله</h2>
+
+    <!-- شبکه کارت‌های ویدیو (۲ تا ۲ تا کنار هم) -->
+    <div class="video-grid">
+      
+      <article class="video-card">
+        <h3>آغوز در پرورش گوساله - هدف طلایی چیست؟</h3>
+        <div class="aparat-wrapper">
+          <iframe src="https://www.aparat.com/video/video/embed/videohash/b86t2s3/vt/frame" allowfullscreen="true"></iframe>
+        </div>
+      </article>
+
+      <article class="video-card">
+        <h3>آغوز در پرورش گوساله - چالش ها و فرصت ها</h3>
+        <div class="aparat-wrapper">
+          <iframe src="https://www.aparat.com/video/video/embed/videohash/2qphm/vt/frame" allowfullscreen="true"></iframe>
+        </div>
+      </article>
+
+      <article class="video-card">
+        <h3>پرورش گوساله شیرخوار-شیر در 4 هفته اول</h3>
+        <div class="aparat-wrapper">
+          <iframe src="https://www.aparat.com/video/video/embed/videohash/i03tjgw/vt/frame" allowfullscreen="true"></iframe>
+        </div>
+      </article>
+
+      <article class="video-card">
+        <h3>پرورش گوساله - بخش دوم تغذیه شیر در 4 هفته اول</h3>
+        <div class="aparat-wrapper">
+          <iframe src="https://www.aparat.com/video/video/embed/videohash/r376P/vt/frame" allowfullscreen="true"></iframe>
+        </div>
+      </article>
+
+      <article class="video-card">
+        <h3>پرورش گوساله تاثیر تغذیه شیر بر سیستم ایمنی</h3>
+        <div class="aparat-wrapper">
+          <iframe src="https://www.aparat.com/video/video/embed/videohash/18kdQ/vt/frame" allowfullscreen="true"></iframe>
+        </div>
+      </article>
+
+    </div>
+  </main>
+
+  <!-- ================= مودال ورود مدیریت ================= -->
+  <div id="loginModal" class="modal-overlay">
+    <div class="modal-card">
+      <h3 style="margin-bottom: 15px; color: #0f172a;">ورود به پنل مدیریت</h3>
+      <input type="text" id="adminUser" class="form-input" placeholder="نام کاربری (admin)">
+      <input type="password" id="adminPass" class="form-input" placeholder="رمز عبور (admin123)">
+      <button onclick="checkLogin()" class="btn-primary">ورود</button>
+      <button onclick="closeLoginModal()" style="background: none; border: none; width: 100%; margin-top: 10px; color: #64748b; cursor: pointer;">انصراف</button>
+    </div>
+  </div>
+
+  <!-- دکمه شناور برگشت به بالا -->
+  <a href="#" class="scroll-to-top" id="scrollTopBtn" title="برگشت به بالا">
+    <span>برگشت به بالا</span>
+  </a>
+
+  <!-- اسکریپت تعاملی -->
+  <script src="main.js"></script>
+</body>
+</html>
