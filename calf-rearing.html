@@ -29,7 +29,7 @@
       width: 100%;
       height: 100%;
       object-fit: cover;
-      opacity: 0.55; /* ایجاد تضاد برای خوانی بهتر متن */
+      opacity: 0.55;
     }
 
     .banner-overlay {
@@ -81,7 +81,7 @@
     .aparat-wrapper {
       position: relative;
       width: 100%;
-      padding-top: 56.25%; /* نسبت ۱۶:۹ واقعی */
+      padding-top: 56.25%; /* نسبت ۱۶:۹ */
       border-radius: 14px;
       overflow: hidden;
       background: #000;
@@ -100,30 +100,30 @@
 <body>
 
   <!-- ================= هدر شیشه‌ای ================= -->
-<div class="header-wrapper" id="headerWrapper">
-  <header class="glass-header" id="mainHeader">
-    <nav class="header-nav">
-      <a href="index.html">خانه</a>
-      <a href="messages.html">پیام‌ها</a>
-      <a href="contact.html">ارتباط با ما</a>
-      
-      <div class="dropdown">
-        <a href="#" class="active">گاوهای شیری ▾</a>
-        <div class="dropdown-menu">
-          <a href="calf-rearing.html" class="active">پرورش گوساله</a>
+  <div class="header-wrapper" id="headerWrapper">
+    <header class="glass-header" id="mainHeader">
+      <nav class="header-nav">
+        <a href="index.html">خانه</a>
+        <a href="messages.html">پیام‌ها</a>
+        <a href="contact.html">ارتباط با ما</a>
+        
+        <div class="dropdown">
+          <a href="#" class="active">گاوهای شیری ▾</a>
+          <div class="dropdown-menu">
+            <a href="calf-rearing.html" class="active">پرورش گوساله</a>
+          </div>
         </div>
-      </div>
 
-      <a href="courses.html">دوره‌ها / پروژه</a>
-      <a href="about.html">درباره من</a>
-      <a href="files.html">فایل‌های من</a>
-      <a href="#" id="adminNavBtn" onclick="openLoginModal()" style="color: #4f46e5; border: 1px dashed #4f46e5;">ورود مدیر</a>
-    </nav>
-    <div class="header-logo">
-      <img src="logo.png" alt="لوگو">
-    </div>
-  </header>
-</div>
+        <a href="courses.html">دوره‌ها / پروژه</a>
+        <a href="about.html">درباره من</a>
+        <a href="files.html">فایل‌های من</a>
+        <a href="#" id="adminNavBtn" onclick="openLoginModal(); return false;" style="color: #4f46e5; border: 1px dashed #4f46e5;">ورود مدیر</a>
+      </nav>
+      <div class="header-logo">
+        <a href="index.html"><img src="logo.png" alt="لوگو"></a>
+      </div>
+    </header>
+  </div>
 
   <!-- ================= محتوای اصلی ================= -->
   <main class="container">
@@ -140,7 +140,7 @@
     <!-- عنوان بخش -->
     <h2 class="section-title" style="margin-bottom: 30px; margin-top: 25px;">ویدیوهای آموزشی پرورش گوساله</h2>
 
-    <!-- شبکه کارت‌های ویدیو (۲ تا ۲ تا کنار هم) -->
+    <!-- شبکه کارت‌های ویدیو -->
     <div class="video-grid">
       
       <article class="video-card">
@@ -184,11 +184,15 @@
   <!-- ================= مودال ورود مدیریت ================= -->
   <div id="loginModal" class="modal-overlay">
     <div class="modal-card">
-      <h3 style="margin-bottom: 15px; color: #0f172a;">ورود به پنل مدیریت</h3>
-      <input type="text" id="adminUser" class="form-input" placeholder="نام کاربری (admin)">
-      <input type="password" id="adminPass" class="form-input" placeholder="رمز عبور (admin123)">
-      <button onclick="checkLogin()" class="btn-primary">ورود</button>
-      <button onclick="closeLoginModal()" style="background: none; border: none; width: 100%; margin-top: 10px; color: #64748b; cursor: pointer;">انصراف</button>
+      <h3>ورود به پنل مدیریت</h3>
+      <form id="loginForm" onsubmit="event.preventDefault(); checkLogin();">
+        <input type="text" id="adminUser" placeholder="نام کاربری" required autocomplete="off">
+        <input type="password" id="adminPass" placeholder="کلمه عبور" required>
+        <div class="modal-btn-group">
+          <button type="submit" class="btn-login">ورود</button>
+          <button type="button" class="btn-cancel" onclick="closeLoginModal()">انصراف</button>
+        </div>
+      </form>
     </div>
   </div>
 
@@ -197,7 +201,7 @@
     <span>برگشت به بالا</span>
   </a>
 
-  <!-- اسکریپت تعاملی -->
+  <!-- اسکریپت اصلی -->
   <script src="main.js"></script>
 </body>
 </html>
