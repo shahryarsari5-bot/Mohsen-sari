@@ -249,7 +249,7 @@
         <a href="courses.html">دوره‌ها / پروژه</a>
         <a href="about.html">درباره من</a>
         <a href="files.html">فایل‌های من</a>
-        <a href="#" id="adminNavBtn" onclick="openLoginModal()" style="color: #4f46e5; border: 1px dashed #4f46e5;">ورود مدیر</a>
+        <a href="#" id="adminNavBtn" onclick="openLoginModal(); return false;" style="color: #4f46e5; border: 1px dashed #4f46e5;">ورود مدیر</a>
       </nav>
       <div class="header-logo">
         <a href="index.html"><img src="logo.png" alt="لوگو"></a>
@@ -265,39 +265,8 @@
       <button class="slider-btn prev" onclick="moveSlide(1)">❯</button>
       <button class="slider-btn next" onclick="moveSlide(-1)">❮</button>
 
-      <div class="slider-track" id="sliderTrack">
-        
-        <div class="slide-item">
-          <img src="https://images.pexels.com/photos/422218/pexels-photo-422218.jpeg?auto=compress&cs=tinysrgb&w=1200" alt="خبر ۱">
-          <div class="slide-caption">
-            <span class="slide-tag">خوش آمدید</span>
-            <h3>به وبسایت تخصصی مدیریت و تغذیه گله‌های گاو شیری خوش آمدید</h3>
-          </div>
-        </div>
-
-        <div class="slide-item">
-          <img src="https://images.pexels.com/photos/1112080/pexels-photo-1112080.jpeg?auto=compress&cs=tinysrgb&w=1200" alt="خبر ۲">
-          <div class="slide-caption">
-            <span class="slide-tag">اطلاعیه مهم</span>
-            <h3>راهکارهای مدرن کاهش استرس گرمایی در مزارع پرورش صنعتی</h3>
-          </div>
-        </div>
-
-        <div class="slide-item">
-          <img src="https://images.pexels.com/photos/735968/pexels-photo-735968.jpeg?auto=compress&cs=tinysrgb&w=1200" alt="خبر ۳">
-          <div class="slide-caption">
-            <span class="slide-tag">مقالات جدید</span>
-            <h3>تازه‌ترین یافته‌ها درباره مدیریت بهداشت و پرورش گوساله تازه متولد شده</h3>
-          </div>
-        </div>
-
-      </div>
-
-      <div class="slider-dots" id="sliderDots">
-        <span class="dot active" onclick="currentSlide(0)"></span>
-        <span class="dot" onclick="currentSlide(1)"></span>
-        <span class="dot" onclick="currentSlide(2)"></span>
-      </div>
+      <div class="slider-track" id="sliderTrack"></div>
+      <div class="slider-dots" id="sliderDots"></div>
     </section>
 
     <!-- کارت معرفی و هیرو شیشه‌ای -->
@@ -368,62 +337,16 @@
   <div id="loginModal" class="modal-overlay">
     <div class="modal-card">
       <h3>ورود به پنل مدیریت</h3>
-<!-- این کد رو جایگزین فرم ورود فعلی کن -->
-<form onsubmit="event.preventDefault(); checkLogin();">
-  <input type="text" id="adminUser" placeholder="نام کاربری">
-  <input type="password" id="adminPass" placeholder="رمز عبور">
-  <div class="modal-btn-group">
-    <button type="submit" class="btn-login">ورود</button>
-    <button type="button" class="btn-cancel" onclick="closeLoginModal()">انصراف</button>
-  </div>
-</form>
+      <form onsubmit="event.preventDefault(); checkLogin();">
+        <input type="text" id="adminUser" placeholder="نام کاربری">
+        <input type="password" id="adminPass" placeholder="رمز عبور">
+        <div class="modal-btn-group">
+          <button type="submit" class="btn-login">ورود</button>
+          <button type="button" class="btn-cancel" onclick="closeLoginModal()">انصراف</button>
+        </div>
+      </form>
     </div>
   </div>
-
-  <!-- اسکریپت کنترل اسلایدر (باگ اصلاح‌شده RTL) -->
-  <script>
-    let slideIndex = 0;
-
-    function updateSlider() {
-      const track = document.getElementById('sliderTrack');
-      const dots = document.querySelectorAll('#sliderDots .dot');
-      const slides = document.querySelectorAll('.slide-item');
-      
-      if (!track || slides.length === 0) return;
-
-      // اصلاح انیمیشن برای سایت‌های RTL (برعکس شدن جهت)
-      track.style.transform = `translateX(${slideIndex * 100}%)`;
-
-      dots.forEach((dot, index) => {
-        if (index === slideIndex) {
-          dot.classList.add('active');
-        } else {
-          dot.classList.remove('active');
-        }
-      });
-    }
-
-    function moveSlide(direction) {
-      const slides = document.querySelectorAll('.slide-item');
-      if (slides.length === 0) return;
-
-      slideIndex += direction;
-      if (slideIndex >= slides.length) slideIndex = 0;
-      if (slideIndex < 0) slideIndex = slides.length - 1;
-
-      updateSlider();
-    }
-
-    function currentSlide(index) {
-      slideIndex = index;
-      updateSlider();
-    }
-
-    // تغییر خودکار هر ۵ ثانیه
-    let autoSlideInterval = setInterval(() => {
-      moveSlide(1);
-    }, 5000);
-  </script>
 
   <script src="main.js"></script>
 </body>
