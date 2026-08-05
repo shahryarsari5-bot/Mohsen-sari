@@ -368,14 +368,15 @@
   <div id="loginModal" class="modal-overlay">
     <div class="modal-card">
       <h3>ورود به پنل مدیریت</h3>
-      <form id="loginForm" onsubmit="handleLogin(event)">
-        <input type="text" id="username" placeholder="نام کاربری" required autocomplete="off">
-        <input type="password" id="password" placeholder="کلمه عبور" required>
-        <div class="modal-btn-group">
-          <button type="submit" class="btn-login">ورود</button>
-          <button type="button" class="btn-cancel" onclick="closeLoginModal()">انصراف</button>
-        </div>
-      </form>
+<!-- این کد رو جایگزین فرم ورود فعلی کن -->
+<form onsubmit="event.preventDefault(); checkLogin();">
+  <input type="text" id="adminUser" placeholder="نام کاربری">
+  <input type="password" id="adminPass" placeholder="رمز عبور">
+  <div class="modal-btn-group">
+    <button type="submit" class="btn-login">ورود</button>
+    <button type="button" class="btn-cancel" onclick="closeLoginModal()">انصراف</button>
+  </div>
+</form>
     </div>
   </div>
 
