@@ -91,7 +91,32 @@
   <script src="main.js"></script>
 
   <script>
-    // پردازش اختصاصی ثبت پیام
+    // تابع رندر و نمایش لیست پیام‌ها
+    function loadAndRenderMessages() {
+      const container = document.getElementById('messagesContainer');
+      if (!container) return;
+
+      const messages = JSON.parse(localStorage.getItem('app_messages') || '[]');
+      const isAdmin = localStorage.getItem('isAdmin') === 'true';
+
+      if (messages.length === 0) {
+        container.innerHTML = '<p style="text-align: center; color: #64748b; padding: 20px;">هیچ پیامی ثبت نشده است.</p>';
+        return;
+      }
+
+      container.innerHTML = messages.map(msg => `
+        <div class="message-card" style="background: #fff; border-radius: 16px; padding: 20px; margin-bottom: 15px; border: 1px solid #e2e8f0; box-shadow: 0 4px 12px rgba(0,0,0,0.03); position: relative;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+            <strong style="color: #0284c7; font-size: 1.05rem;">${msg.sender}</strong>
+            <span style="font-size: 0.8rem; color: #94a3b8;">${msg.date}</span>
+          </div>
+          <p style="color: #334155; line-height: 1.7; margin: 0; white-space: pre-line;">${msg.text}</p>
+          ${isAdmin ? `<button onclick="deleteMessage(${msg.id})" style="margin-top: 12px; background: #ef4444; color: #fff; border: none; padding: 6px 12px; border-radius: 8px; cursor: pointer; font-size: 0.8rem; font-weight: bold;">حذف پیام</button>` : ''}
+        </div>
+      `).join('');
+    }
+
+    // پردازش ثبت پیام جدید
     function submitNewMessage(e) {
       e.preventDefault();
       
@@ -101,40 +126,51 @@
 
       if (!textInput.value.trim()) return;
 
-      // ۱. اگر تابع ذخیره پیام در main.js باشد اجرا می‌شود
-      if (typeof saveMessage === 'function') {
-        saveMessage(e);
-      } else {
-        // روش جایگزین مستقیم در صورت نبود تابع در main.js
-        const messages = JSON.parse(localStorage.getItem('app_messages') || '[]');
-        messages.unshift({
+      const newMessage = {
+        id: Date.now(),
+        sender: senderInput.value.trim() || 'مدیر سیستم',
+        text: textInput.value.trim(),
+        date: new Date().toLocaleDateString('fa-IR')
+      };
+
+      // ۱. ذخیره در حافظه محلی
+      const messages = JSON.parse(localStorage.getItem('app_messages') || '[]');
+      messages.unshift(newMessage);
+      localStorage.setItem('app_messages', JSON.stringify(messages));
+
+      // ۲. افزودن به اسلایدر صفحه اصلی در صورت تیک خوردن
+      if (checkSlider && checkSlider.checked) {
+        const sliderItems = JSON.parse(localStorage.getItem('home_slider_items') || '[]');
+        sliderItems.unshift({
           id: Date.now(),
-          sender: senderInput.value || 'مدیر سیستم',
-          text: textInput.value,
-          date: new Date().toLocaleDateString('fa-IR')
+          title: textInput.value.trim(),
+          tag: 'پیام مهم',
+          image: 'https://images.unsplash.com/photo-1546445317-29f4545f9d52?q=80&w=1000&auto=format&fit=crop'
         });
-        localStorage.setItem('app_messages', JSON.stringify(messages));
+        localStorage.setItem('home_slider_items', JSON.stringify(sliderItems));
       }
 
-      // ۲. اضافه کردن به اسلایدر صفحه اصلی در صورت تیک زدن چک‌باکس
-      if (checkSlider && checkSlider.checked && typeof addSlideToSlider === 'function') {
-        addSlideToSlider({
-          title: textInput.value,
-          tag: 'پیام مهم'
-        });
-      }
-
-      // بازنشانی فرم و به‌روزرسانی لیست
+      // بازنشانی فرم و رندر مجدد
       document.getElementById('messageForm').reset();
-      if (typeof renderMessages === 'function') renderMessages();
+      loadAndRenderMessages();
     }
 
-    // بررسی دسترسی هنگام لود
+    // تابع حذف پیام توسط مدیر
+    function deleteMessage(id) {
+      if (!confirm('آیا از حذف این پیام اطمینان دارید؟')) return;
+      let messages = JSON.parse(localStorage.getItem('app_messages') || '[]');
+      messages = messages.filter(m => m.id !== id);
+      localStorage.setItem('app_messages', JSON.stringify(messages));
+      loadAndRenderMessages();
+    }
+
+    // بررسی دسترسی و بارگذاری داده‌ها هنگام باز شدن صفحه
     document.addEventListener('DOMContentLoaded', () => {
       const isAdmin = localStorage.getItem('isAdmin') === 'true';
       const formSection = document.getElementById('adminMessageSection');
       if (formSection) formSection.style.display = isAdmin ? 'block' : 'none';
-      if (typeof renderMessages === 'function') renderMessages();
+      
+      loadAndRenderMessages();
     });
   </script>
 </body>
