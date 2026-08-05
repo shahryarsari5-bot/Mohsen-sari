@@ -27,7 +27,7 @@
         <a href="courses.html">دوره‌ها / پروژه</a>
         <a href="about.html">درباره من</a>
         <a href="files.html">فایل‌های من</a>
-        <a href="#" id="adminNavBtn" onclick="openLoginModal()" style="color: #4f46e5; border: 1px dashed #4f46e5;">ورود مدیر</a>
+        <a href="#" id="adminNavBtn" onclick="openLoginModal(); return false;" style="color: #4f46e5; border: 1px dashed #4f46e5;">ورود مدیر</a>
       </nav>
       <div class="header-logo">
         <a href="index.html"><img src="logo.png" alt="لوگو"></a>
@@ -41,7 +41,7 @@
     <!-- فرم ثبت پیام جدید (فقط برای مدیر) -->
     <section id="adminMessageSection" class="messages-form-card" style="display: none;">
       <h2>ارسال پیام جدید (ویژه مدیریت)</h2>
-      <form id="messageForm" onsubmit="handleMessageSubmit(event)">
+      <form id="messageForm" onsubmit="submitNewMessage(event)">
         <input type="text" id="senderName" placeholder="نام فرستنده (مثلاً: مدیر سیستم)" required>
         <textarea id="messageText" rows="4" placeholder="متن پیام خود را اینجا بنویسید..." required></textarea>
         
@@ -57,11 +57,11 @@
       </form>
     </section>
 
-    <!-- لیست پیام‌های ثبت‌شده (برای همه قابل مشاهده است) -->
+    <!-- لیست پیام‌های ثبت‌شده -->
     <section class="messages-list-section">
       <h2>لیست پیام‌های ارسال‌شده</h2>
       <div id="messagesContainer" class="messages-list">
-        <!-- پیام‌ها با جاوااسکریپت اینجا ساخته میشن -->
+        <!-- پیام‌ها با جاوااسکریپت بارگذاری می‌شوند -->
       </div>
     </section>
 
@@ -76,9 +76,9 @@
   <div id="loginModal" class="modal-overlay">
     <div class="modal-card">
       <h3>ورود به پنل مدیریت</h3>
-      <form id="loginForm" onsubmit="handleLogin(event)">
-        <input type="text" id="username" placeholder="نام کاربری" required autocomplete="off">
-        <input type="password" id="password" placeholder="کلمه عبور" required>
+      <form id="loginForm" onsubmit="event.preventDefault(); checkLogin();">
+        <input type="text" id="adminUser" placeholder="نام کاربری" required autocomplete="off">
+        <input type="password" id="adminPass" placeholder="کلمه عبور" required>
         <div class="modal-btn-group">
           <button type="submit" class="btn-login">ورود</button>
           <button type="button" class="btn-cancel" onclick="closeLoginModal()">انصراف</button>
@@ -89,37 +89,53 @@
 
   <!-- اسکریپت اصلی -->
   <script src="main.js"></script>
-  
+
   <script>
-    // کنترل دسترسی بخش مدیریت در صفحه پیام‌ها
-    function checkMessagePageAccess() {
-      const isAdmin = localStorage.getItem('isAdmin') === 'true';
-      const formSection = document.getElementById('adminMessageSection');
-
-      if (formSection) {
-        formSection.style.display = isAdmin ? 'block' : 'none';
-      }
-    }
-
-    // پردازش ثبت پیام توسط مدیر
-    function handleMessageSubmit(e) {
+    // پردازش اختصاصی ثبت پیام
+    function submitNewMessage(e) {
       e.preventDefault();
       
+      const senderInput = document.getElementById('senderName');
       const textInput = document.getElementById('messageText');
       const checkSlider = document.getElementById('sendToSliderCheck');
-      
-      if (checkSlider && checkSlider.checked && textInput) {
+
+      if (!textInput.value.trim()) return;
+
+      // ۱. اگر تابع ذخیره پیام در main.js باشد اجرا می‌شود
+      if (typeof saveMessage === 'function') {
+        saveMessage(e);
+      } else {
+        // روش جایگزین مستقیم در صورت نبود تابع در main.js
+        const messages = JSON.parse(localStorage.getItem('app_messages') || '[]');
+        messages.unshift({
+          id: Date.now(),
+          sender: senderInput.value || 'مدیر سیستم',
+          text: textInput.value,
+          date: new Date().toLocaleDateString('fa-IR')
+        });
+        localStorage.setItem('app_messages', JSON.stringify(messages));
+      }
+
+      // ۲. اضافه کردن به اسلایدر صفحه اصلی در صورت تیک زدن چک‌باکس
+      if (checkSlider && checkSlider.checked && typeof addSlideToSlider === 'function') {
         addSlideToSlider({
           title: textInput.value,
           tag: 'پیام مهم'
         });
       }
 
-      saveMessage(e);
+      // بازنشانی فرم و به‌روزرسانی لیست
+      document.getElementById('messageForm').reset();
+      if (typeof renderMessages === 'function') renderMessages();
     }
 
-    // بررسی وضعیت هنگام لود صفحه
-    document.addEventListener('DOMContentLoaded', checkMessagePageAccess);
+    // بررسی دسترسی هنگام لود
+    document.addEventListener('DOMContentLoaded', () => {
+      const isAdmin = localStorage.getItem('isAdmin') === 'true';
+      const formSection = document.getElementById('adminMessageSection');
+      if (formSection) formSection.style.display = isAdmin ? 'block' : 'none';
+      if (typeof renderMessages === 'function') renderMessages();
+    });
   </script>
 </body>
 </html>
