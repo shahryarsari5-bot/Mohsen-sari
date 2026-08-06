@@ -77,18 +77,22 @@ function updateAdminUI() {
 }
 
 // ==========================================
-// ۳. مدیریت بخش پیام‌ها (ذخیره، نمایش و حذف)
+// ۳. مدیریت بخش پیام‌ها (ذخیره، نمایش، پس‌زمینه و حذف)
 // ==========================================
 function saveMessage(e) {
   if (e) e.preventDefault();
   
   const senderInput = document.getElementById('senderName');
   const textInput = document.getElementById('messageText');
+  const bgInput = document.getElementById('messageBg') || document.getElementById('msgBgImage') || document.getElementById('messageImage');
+  const showInSliderCheck = document.getElementById('msgShowInSlider') || document.getElementById('showMsgInSlider') || document.getElementById('showMessageInSliderCheck');
 
   if (!senderInput || !textInput) return;
 
   const sender = senderInput.value.trim();
   const text = textInput.value.trim();
+  const bgImage = bgInput?.value?.trim() || (bgInput?.files && bgInput.files[0] ? URL.createObjectURL(bgInput.files[0]) : '');
+  const showInSlider = showInSliderCheck ? showInSliderCheck.checked : false;
   
   if (!sender || !text) return;
 
@@ -96,12 +100,23 @@ function saveMessage(e) {
     id: Date.now(),
     sender: sender,
     text: text,
+    bgImage: bgImage,
     date: new Date().toLocaleDateString('fa-IR')
   };
 
   let messages = JSON.parse(localStorage.getItem('site_messages')) || [];
   messages.unshift(newMessage);
   localStorage.setItem('site_messages', JSON.stringify(messages));
+
+  // اگر تیک نمایش در اسلایدر زده شده بود
+  if (showInSlider) {
+    addSlideToSlider({
+      id: newMessage.id,
+      title: `${sender}: ${text}`,
+      tag: 'پیام مخاطبان',
+      image: bgImage
+    });
+  }
 
   const messageForm = document.getElementById('messageForm');
   if (messageForm) messageForm.reset();
@@ -137,55 +152,63 @@ function deleteMessage(id) {
     let messages = JSON.parse(localStorage.getItem('site_messages')) || [];
     messages = messages.filter(msg => msg.id !== id);
     localStorage.setItem('site_messages', JSON.stringify(messages));
+    
+    // پاکسازی همزمان از اسلایدر
+    removeFromSlider(id);
     displayMessages();
   }
 }
 
 // ==========================================
-// ۴. سیستم هوشمند اسلایدر پویای صفحه اصلی
+// ۴. سیستم هوشمند اسلایدر پویای صفحه اصلی (پشتیبانی از تصویر، پس‌زمینه پیام و فریم ویدیو)
 // ==========================================
+let currentSlideIndex = 0;
+let slideInterval = null;
+
 const BACKUP_IMAGES = [
   "https://images.pexels.com/photos/422218/pexels-photo-422218.jpeg?auto=compress&cs=tinysrgb&w=1200",
   "https://images.pexels.com/photos/1112080/pexels-photo-1112080.jpeg?auto=compress&cs=tinysrgb&w=1200",
-  "https://images.pexels.com/photos/735968/pexels-photo-735968.jpeg?auto=compress&cs=tinysrgb&w=1200",
-  "https://images.pexels.com/photos/158179/cows-pasture-sky-clouds-158179.jpeg?auto=compress&cs=tinysrgb&w=1200",
-  "https://images.pexels.com/photos/36347/cow-pasture-animal-nature.jpg?auto=compress&cs=tinysrgb&w=1200",
-  "https://images.pexels.com/photos/1321124/pexels-photo-1321124.jpeg?auto=compress&cs=tinysrgb&w=1200",
-  "https://images.pexels.com/photos/62321/cow-head-livestock-milk-62321.jpeg?auto=compress&cs=tinysrgb&w=1200",
-  "https://images.pexels.com/photos/460257/pexels-photo-460257.jpeg?auto=compress&cs=tinysrgb&w=1200",
-  "https://images.pexels.com/photos/2252551/pexels-photo-2252551.jpeg?auto=compress&cs=tinysrgb&w=1200",
-  "https://images.pexels.com/photos/235725/pexels-photo-235725.jpeg?auto=compress&cs=tinysrgb&w=1200",
-  "https://images.pexels.com/photos/101852/pexels-photo-101852.jpeg?auto=compress&cs=tinysrgb&w=1200",
-  "https://images.pexels.com/photos/2647053/pexels-photo-2647053.jpeg?auto=compress&cs=tinysrgb&w=1200"
+  "https://images.pexels.com/photos/735968/pexels-photo-735968.jpeg?auto=compress&cs=tinysrgb&w=1200"
 ];
 
-function getUniqueBackupImage(existingSlides) {
-  const usedImages = (existingSlides || []).map(s => s.image);
-  const availableImages = BACKUP_IMAGES.filter(img => !usedImages.includes(img));
+function addSlideToSlider(newItem) {
+  let slides = [];
+  try {
+    slides = JSON.parse(localStorage.getItem('homeSlides')) || [];
+  } catch (e) { slides = []; }
 
-  if (availableImages.length > 0) {
-    const index = Math.floor(Math.random() * availableImages.length);
-    return availableImages[index];
+  // دریافت تصویر اختصاصی (عکس دوره، فریم ویدیو یا پس‌زمینه پیام)
+  const slideImage = newItem.image || newItem.bgImage || newItem.background || newItem.frameUrl || BACKUP_IMAGES[Math.floor(Math.random() * BACKUP_IMAGES.length)];
+
+  const slideData = {
+    id: newItem.id || Date.now(),
+    title: newItem.title || newItem.text || 'بدون عنوان',
+    tag: newItem.tag || 'اطلاعیه',
+    image: slideImage,
+    date: newItem.date || new Date().toLocaleDateString('fa-IR')
+  };
+
+  // به‌روزرسانی اسلاید موجود یا افزودن اسلاید جدید
+  const existingIndex = slides.findIndex(s => s.id === slideData.id);
+  if (existingIndex !== -1) {
+    slides[existingIndex] = slideData;
+  } else {
+    slides.unshift(slideData);
   }
-  const randomIndex = Math.floor(Math.random() * BACKUP_IMAGES.length);
-  return BACKUP_IMAGES[randomIndex];
+
+  if (slides.length > 7) slides = slides.slice(0, 7);
+
+  localStorage.setItem('homeSlides', JSON.stringify(slides));
+  renderHomeSlider();
 }
 
-function addSlideToSlider(newItem) {
-  let slides = JSON.parse(localStorage.getItem('homeSlides')) || [];
-  
-  slides.unshift({
-    id: Date.now(),
-    title: newItem.title,
-    tag: newItem.tag || 'دوره جدید',
-    image: newItem.image || getUniqueBackupImage(slides),
-    date: new Date().toLocaleDateString('fa-IR')
-  });
+function removeFromSlider(id) {
+  let slides = [];
+  try {
+    slides = JSON.parse(localStorage.getItem('homeSlides')) || [];
+  } catch (e) { slides = []; }
 
-  if (slides.length > 7) {
-    slides = slides.slice(0, 7);
-  }
-
+  slides = slides.filter(s => s.id !== id);
   localStorage.setItem('homeSlides', JSON.stringify(slides));
   renderHomeSlider();
 }
@@ -193,20 +216,23 @@ function addSlideToSlider(newItem) {
 function renderHomeSlider() {
   const track = document.getElementById('sliderTrack');
   const dotsContainer = document.getElementById('sliderDots');
-  if (!track || !dotsContainer) return;
+  if (!track) return;
 
-  let slides = JSON.parse(localStorage.getItem('homeSlides')) || [];
+  let slides = [];
+  try {
+    slides = JSON.parse(localStorage.getItem('homeSlides')) || [];
+  } catch (e) { slides = []; }
 
   if (slides.length === 0) {
     slides = [
-      { title: "به وبسایت تخصصی مدیریت و تغذیه گله‌های گاو شیری خوش آمدید", tag: "خوش‌آمدگویی", image: BACKUP_IMAGES[0] },
-      { title: "راهکارهای مدرن کاهش استرس گرمایی در مزارع پرورش صنعتی", tag: "اطلاعیه مهم", image: BACKUP_IMAGES[1] },
-      { title: "تازه‌ترین یافته‌ها درباره مدیریت بهداشت و پرورش گوساله تازه متولد شده", tag: "مقالات جدید", image: BACKUP_IMAGES[2] }
+      { id: 1, title: "به وبسایت تخصصی مدیریت و تغذیه گله‌های گاو شیری خوش آمدید", tag: "خوش‌آمدگویی", image: BACKUP_IMAGES[0] },
+      { id: 2, title: "راهکارهای مدرن کاهش استرس گرمایی در مزارع پرورش صنعتی", tag: "اطلاعیه مهم", image: BACKUP_IMAGES[1] },
+      { id: 3, title: "تازه‌ترین یافته‌ها درباره مدیریت بهداشت و پرورش گوساله تازه متولد شده", tag: "مقالات جدید", image: BACKUP_IMAGES[2] }
     ];
   }
 
   track.innerHTML = '';
-  dotsContainer.innerHTML = '';
+  if (dotsContainer) dotsContainer.innerHTML = '';
 
   slides.forEach((slide, idx) => {
     const slideDiv = document.createElement('div');
@@ -220,11 +246,58 @@ function renderHomeSlider() {
     `;
     track.appendChild(slideDiv);
 
-    const dot = document.createElement('span');
-    dot.className = `dot ${idx === 0 ? 'active' : ''}`;
-    dot.setAttribute('onclick', `currentSlide(${idx})`);
-    dotsContainer.appendChild(dot);
+    if (dotsContainer) {
+      const dot = document.createElement('span');
+      dot.className = `dot ${idx === 0 ? 'active' : ''}`;
+      dot.onclick = () => goToSlide(idx);
+      dotsContainer.appendChild(dot);
+    }
   });
+
+  currentSlideIndex = 0;
+  updateSliderPosition();
+  startAutoSlide();
+}
+
+function updateSliderPosition() {
+  const track = document.getElementById('sliderTrack');
+  const dots = document.querySelectorAll('.dot');
+  const items = document.querySelectorAll('.slide-item');
+  if (!track || items.length === 0) return;
+
+  track.style.transform = `translateX(${currentSlideIndex * 100}%)`;
+
+  dots.forEach((dot, idx) => {
+    dot.classList.toggle('active', idx === currentSlideIndex);
+  });
+}
+
+function goToSlide(index) {
+  const items = document.querySelectorAll('.slide-item');
+  if (items.length === 0) return;
+
+  currentSlideIndex = (index + items.length) % items.length;
+  updateSliderPosition();
+  resetAutoSlide();
+}
+
+function moveSlide(direction) {
+  goToSlide(currentSlideIndex + direction);
+}
+
+function nextSlide() { moveSlide(1); }
+function prevSlide() { moveSlide(-1); }
+
+function startAutoSlide() {
+  clearInterval(slideInterval);
+  slideInterval = setInterval(() => {
+    moveSlide(1);
+  }, 5000);
+}
+
+function resetAutoSlide() {
+  clearInterval(slideInterval);
+  startAutoSlide();
 }
 
 // ==========================================
@@ -258,15 +331,12 @@ function createNewCourse() {
     desc
   };
 
-  // ذخیره دوره در localStorage
   let courses = JSON.parse(localStorage.getItem('site_courses')) || [];
   courses.unshift(newSession);
   localStorage.setItem('site_courses', JSON.stringify(courses));
 
-  // اگر تیک "نمایش در اسلایدر" خورده بود، اضافه کن به اسلایدر خانه
   if (showInSlider) {
     if (useVideoFrame && localFile) {
-      // گرفتن ثانیه اول ویدیو
       const video = document.createElement('video');
       video.src = finalVideoSrc;
       video.currentTime = 1;
@@ -279,14 +349,15 @@ function createNewCourse() {
         const frameUrl = canvas.toDataURL('image/jpeg');
 
         addSlideToSlider({
+          id: newSession.id,
           title: `${category} - ${title}`,
           tag: 'دوره جدید',
           image: frameUrl
         });
       };
     } else {
-      // عکس تصادفی زاپاس
       addSlideToSlider({
+        id: newSession.id,
         title: `${category} - ${title}`,
         tag: 'دوره جدید'
       });
@@ -295,7 +366,6 @@ function createNewCourse() {
 
   alert('جلسه جدید با موفقیت ثبت شد!');
   
-  // پاکسازی فرم
   document.getElementById('courseCategory').value = '';
   document.getElementById('courseTitle').value = '';
   if (document.getElementById('courseVideoUrl')) document.getElementById('courseVideoUrl').value = '';
@@ -317,7 +387,6 @@ function renderCoursesAccordion() {
     return;
   }
 
-  // دسته‌بندی بر اساس category
   const categories = {};
   courses.forEach(item => {
     if (!categories[item.category]) categories[item.category] = [];
@@ -354,20 +423,22 @@ function renderCoursesAccordion() {
   container.innerHTML = html;
 }
 
-// تابع حذف یک جلسه خاص
 function deleteSession(id) {
   if (confirm('آیا از حذف این جلسه مطمئن هستید؟')) {
     let courses = JSON.parse(localStorage.getItem('site_courses')) || [];
     courses = courses.filter(item => item.id !== id);
     localStorage.setItem('site_courses', JSON.stringify(courses));
+    removeFromSlider(id);
     renderCoursesAccordion();
   }
 }
 
-// تابع حذف کامل یک فصل/دوره
 function deleteCategory(categoryName) {
   if (confirm(`آیا از حذف کامل فصل "${categoryName}" و تمام جلسات آن مطمئن هستید؟`)) {
     let courses = JSON.parse(localStorage.getItem('site_courses')) || [];
+    const categorySessions = courses.filter(item => item.category === categoryName);
+    categorySessions.forEach(session => removeFromSlider(session.id));
+    
     courses = courses.filter(item => item.category !== categoryName);
     localStorage.setItem('site_courses', JSON.stringify(courses));
     renderCoursesAccordion();
